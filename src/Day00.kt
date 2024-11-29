@@ -7,21 +7,19 @@ fun main() {
             .sumOf { numbers -> ("" + numbers.first() + numbers.last()).toInt() }
     }
 
-    // Brut recursive parsing. Not very elegant, but it works...
-    fun parseLiteralNumbers(line: String, numbers: String): String {
+    // Recursive parsing with a map of literal numbers
+    fun parseLiteralNumbers(line: String, parsedNumbers: String): String {
+        val numbersMap = mapOf(
+            "one" to 1, "two" to 2, "three" to 3, "four" to 4, "five" to 5,
+            "six" to 6, "seven" to 7, "eight" to 8, "nine" to 9)
+
         return when {
-            line.isEmpty() -> numbers // We stop parsing
-            line.startsWith("one") or line.startsWith("1") -> parseLiteralNumbers(line.substring(1), numbers + "1")
-            line.startsWith("two") or line.startsWith("2") -> parseLiteralNumbers(line.substring(1), numbers + "2")
-            line.startsWith("three") or line.startsWith("3") -> parseLiteralNumbers(line.substring(1), numbers + "3")
-            line.startsWith("four") or line.startsWith("4") -> parseLiteralNumbers(line.substring(1), numbers + "4")
-            line.startsWith("five") or line.startsWith("5") -> parseLiteralNumbers(line.substring(1), numbers + "5")
-            line.startsWith("six") or line.startsWith("6") -> parseLiteralNumbers(line.substring(1), numbers + "6")
-            line.startsWith("seven") or line.startsWith("7") -> parseLiteralNumbers(line.substring(1), numbers + "7")
-            line.startsWith("eight") or line.startsWith("8") -> parseLiteralNumbers(line.substring(1), numbers + "8")
-            line.startsWith("nine") or line.startsWith("9") -> parseLiteralNumbers(line.substring(1), numbers + "9")
-            line[0].isDigit() -> "" + line.first()
-            else -> parseLiteralNumbers(line.substring(1), numbers) // We continue parsing
+            line.isEmpty() -> parsedNumbers // We stop parsing
+            line[0].isDigit() -> parseLiteralNumbers(line.substring(1), parsedNumbers + line.first())
+            line.take(3) in numbersMap.keys -> parseLiteralNumbers(line.substring(1), parsedNumbers + numbersMap[line.take(3)])
+            line.take(4) in numbersMap.keys -> parseLiteralNumbers(line.substring(1), parsedNumbers + numbersMap[line.take(4)])
+            line.take(5) in numbersMap.keys -> parseLiteralNumbers(line.substring(1), parsedNumbers + numbersMap[line.take(5)])
+            else -> parseLiteralNumbers(line.substring(1), parsedNumbers)
         }
     }
 
